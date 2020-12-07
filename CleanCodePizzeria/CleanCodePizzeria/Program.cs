@@ -2,11 +2,16 @@
 
 namespace CleanCodePizzeria
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+        }
+
+        public string[] GetPizzaMenuEntries()
+        {
+            throw new Exception("yeet");
         }
     }
 }
