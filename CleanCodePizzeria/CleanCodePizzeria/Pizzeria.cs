@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CleanCodePizzeria
 {
-    public class Program
+    public class Pizzeria
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
+        static readonly Pizzeria _instance = new Pizzeria();
+        private Pizzeria() { }
+        public static Pizzeria GetPizzeria() => _instance;
 
         public string[] GetPizzaMenuEntries()
         {
@@ -22,16 +25,6 @@ namespace CleanCodePizzeria
         public string[] GetExtraMenuEntries()
         {
             throw new NotImplementedException("not implemented yet. pls come back l8r");
-        }
-
-        public object StartOrder()
-        {
-            throw new NotImplementedException();
-        }
-
-        public object AddToOrder(string v)
-        {
-            throw new NotImplementedException();
         }
     }
 }
