@@ -8,9 +8,9 @@ namespace CleanCodePizzeria
 {
     public class Pizza : MenuItem
     {
-        public IEnumerable<Ingredient> Ingredients { get; }
+        public List<Ingredient> Ingredients { get; }
 
-        public Pizza(string title, int price, IEnumerable<Ingredient> ingredients) : base(title, price)
+        public Pizza(string title, List<Ingredient> ingredients, int price) : base(title, price)
         {
             Ingredients = ingredients;
         }
@@ -23,11 +23,21 @@ namespace CleanCodePizzeria
 
     public class Ingredient
     {
+        public Ingredient(string title)
+        {
+            Title = title;
+        }
+
         public string Title { get; set; }
     }
 
     public class ExtraIngredient : Ingredient
     {
+        public ExtraIngredient(string title, int price) : base(title)
+        {
+            Price = price;
+        }
+
         public int Price { get; set; }
     }
 }
