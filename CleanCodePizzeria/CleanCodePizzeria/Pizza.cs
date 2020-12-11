@@ -17,7 +17,7 @@ namespace CleanCodePizzeria
 
         public override string ToString()
         {
-            return $"{Title} - {string.Join(", ", Ingredients)} - {Price}kr";
+            return Title;
         }
     }
 
@@ -29,6 +29,11 @@ namespace CleanCodePizzeria
         }
 
         public string Title { get; set; }
+
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 
     public class ExtraIngredient : Ingredient
@@ -39,5 +44,10 @@ namespace CleanCodePizzeria
         }
 
         public int Price { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Title}: {Price} kr";
+        }
     }
 }

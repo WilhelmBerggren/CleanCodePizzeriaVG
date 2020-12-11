@@ -15,6 +15,10 @@ namespace CleanCodePizzeria
             Title = title;
             Price = price;
         }
+        public override string ToString()
+        {
+            return $"{Title}: {Price} kr";
+        }
     }
 
     public class Drink : MenuItem
