@@ -17,7 +17,7 @@ namespace CleanCodePizzeria
 
         public override string ToString()
         {
-            return Title;
+            return $"{Title} - {Price}kr";
         }
     }
 

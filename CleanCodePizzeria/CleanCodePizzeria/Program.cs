@@ -12,17 +12,12 @@ namespace CleanCodePizzeria
             var pizzeria = Pizzeria.GetPizzeria();
             var orderManager = new OrderManager(pizzeria);
 
-            Console.WriteLine("Hello!\n[0]Costumer\n[1]Employee");
+            Console.WriteLine("Hello!\n[0]Customer\n[1]Employee");
             var input = Console.ReadLine();
             switch (input)
             {
                 case "0":
-                    var order = pizzeria.StartOrder();
-                    Console.WriteLine("Add an item:");
-                    while (true)
-                    {
-                        orderManager.Start();
-                    }
+                    orderManager.CreateAndPlaceOrder();
                 break;
 
                 case "1":
