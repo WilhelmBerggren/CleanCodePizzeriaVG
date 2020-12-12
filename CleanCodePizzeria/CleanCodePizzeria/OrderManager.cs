@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CleanCodePizzeria.Types;
+using System;
 
 namespace CleanCodePizzeria
 {
@@ -17,81 +14,119 @@ namespace CleanCodePizzeria
             Visitor = new PizzeriaVisitor();
         }
 
-
         public void Start()
         {
-            var input = "";
-            while (input != "done")
+            Console.WriteLine("Hello!");
+            var actions = new[] { "Customer", "Employee", "Exit" };
+            while (true)
             {
-                DisplayOrders();
-                Console.WriteLine("[new | done]");
-                input = Console.ReadLine();
-                if (input == "new")
+                var action = ItemSelector<string>.SelectItem(actions);
+                Console.WriteLine(action);
+                if (action == actions[0])
                 {
-                    CreateOrder();
+                    CreateAndPlaceOrder();
+                }
+                if (action == actions[1]) {
+                    ManageOrders();
+                }
+                if (action == actions[2])
+                {
+                    return;
                 }
             }
         }
 
-        public void CreateOrder()
+        public void ManageOrders()
         {
-            var input = "";
-            var order = Pizzeria.StartOrder();
-            while(input != "done")
+            if (Pizzeria.Orders.Count == 0)
             {
-                Console.WriteLine("[0] Add pizza\n[1] Add drink");
-                input = Console.ReadLine();
-                if(input == "0")
-                {
-                    var n = 0;
-                    foreach (var item in Pizzeria.Pizzas)
-                    {
-                        Console.WriteLine($"[{n}] {item}");
-                        n++;
-                    }
-                    Pizza pizza = EditPizza(Pizzeria.Pizzas.ToArray()[int.Parse(Console.ReadLine())]);
-                    order.AddItem(pizza);
-                }
-                if(input == "1")
-                {
-
-                }
+                Console.WriteLine("No orders available");
+                return;
             }
-            while (input != "done")
+            var currentOrder = ItemSelector<Order>.SelectItem(Pizzeria.Orders);
+
+            if (currentOrder == default)
             {
-                Console.WriteLine(Visitor.VisitOrder(order));
-                Console.WriteLine("[new | done | exit]");
-                input = Console.ReadLine();
+                Console.WriteLine("No order selected");
+                return;
+            }
+
+            var actions = new string[] { "Complete order", "Remove order" };
+            var action = ItemSelector<string>.SelectItem(actions);
+
+            if (action == actions[0])
+            {
+                Pizzeria.AddOrder(currentOrder);
+                Console.WriteLine("Order completed");
+            }
+            if (action == actions[1])
+            {
+                Pizzeria.Orders.Remove(currentOrder.ID);
+                Console.WriteLine("Order removed");
+            }
+        }
+
+        public void CreateAndPlaceOrder()
+        {
+            var actions = new[] { "New", "Done" };
+            var action = ItemSelector<string>.SelectItem(actions);
+            if (action == actions[0])
+            {
+                var order = CreateOrder();
+                if (order != null)
+                    Pizzeria.AddOrder(order);
+            }
+        }
+
+        public Order CreateOrder()
+        {
+            var order = new Order();
+            var actions = new[] { "Add pizza", "Add drink", "Done", "Cancel" };
+            while(true)
+            {
+                var action = ItemSelector<string>.SelectItem(actions);
+                if(action == actions[0])
+                {
+                    var pizza = ItemSelector<Pizza>.SelectItem(Pizzeria.Pizzas);
+                    if (pizza != null)
+                    {
+                        pizza = EditPizza(pizza);
+                        order.AddItem(pizza);
+                    }
+                }
+                if(action == actions[1])
+                {
+                    var drink = ItemSelector<Drink>.SelectItem(Pizzeria.Drinks);
+                    if (drink != null)
+                        order.AddItem(drink);
+                }
+                if (action == actions[2])
+                {
+                    return order;
+                }
+                if (action == actions[3])
+                {
+                    return null;
+                }
             }
         }
 
         private Pizza EditPizza(Pizza pizza)
         {
-            var input = "";
-            while(input != "done")
+            while(true)
             {
                 Console.WriteLine("Add Extras:");
-                var n = 0;
-                foreach (var item in Pizzeria.Extras)
+                var extra = ItemSelector<ExtraIngredient>.SelectItem(Pizzeria.Extras);
+                if(extra != default)
                 {
-                    Console.WriteLine($"[{n}] {item}");
-                    n++;
-                }
-                input = Console.ReadLine();
-                if(input != "done")
-                {
-                    var index = int.Parse(input);
-                    var extra = Pizzeria.Extras.ToArray()[index];
+                    Console.WriteLine($"Selected: {extra.Title}");
                     pizza.Ingredients.Add(extra);
                     pizza.Price += extra.Price;
+                } else
+                {
+                    return pizza;
                 }
             }
-            return pizza;
-        }
-
-        public void DisplayOrders()
-        {
-            Console.WriteLine(Visitor.VisitPizzeria(Pizzeria));
         }
     }
 }
