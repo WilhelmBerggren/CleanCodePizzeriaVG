@@ -1,4 +1,5 @@
 # CleanCodePizzeria
+Members: Wilhelm Berggren, Nils Lundell
 
 # Patterns used
 ## Singleton
