@@ -4,14 +4,17 @@ using System.Linq;
 
 namespace CleanCodePizzeria
 {
+    class State
+    {
+        public UserState UserState { get; set; }
+        public Order Order { get; set; }
+    }
     enum UserState { ChoosingUser, ChoosingMenuItem, ChoosingDrink, ChoosingPizza, ChoosingExtra, ChoosingOrder, UpdatingOrder }
     class UserInterface
     {
         Pizzeria pizzeria;
         OrderManager orderManager;
         PizzeriaVisitor visitor;
-        UserState userState;
-        Order order;
         public UserInterface()
         {
             pizzeria = Pizzeria.GetPizzeria();
@@ -21,47 +24,31 @@ namespace CleanCodePizzeria
 
         public void RunInterface()
         {
-            userState = UserState.ChoosingUser;
-            order = orderManager.CreateOrder();
+            State state = new State
+            {
+                UserState = UserState.ChoosingUser,
+                Order = orderManager.CreateOrder(),
+            };
 
             while (true)
             {
-                switch (userState)
+                state = state.UserState switch
                 {
-                    case UserState.ChoosingUser:
-                        ChooseUser();
-                        break;
-
-                    case UserState.ChoosingOrder:
-                        ChooseOrder();
-                        break;
-
-                    case UserState.UpdatingOrder:
-                        UpdateOrder();
-                        break;
-
-                    case UserState.ChoosingMenuItem:
-                        ChooseMenuItem();
-                        break;
-
-                    case UserState.ChoosingDrink:
-                        ChooseDrink();
-                        break;
-
-                    case UserState.ChoosingPizza:
-                        ChoosePizza();
-                        break;
-
-                    case UserState.ChoosingExtra:
-                        ChooseExtra();
-                        break;
-                }
+                    UserState.ChoosingUser => ChooseUser(state),
+                    UserState.ChoosingMenuItem => ChooseMenuItem(state),
+                    UserState.ChoosingDrink => ChooseDrink(state),
+                    UserState.ChoosingPizza => ChoosePizza(state),
+                    UserState.ChoosingExtra => ChooseExtra(state),
+                    UserState.ChoosingOrder => ChooseOrder(state),
+                    UserState.UpdatingOrder => UpdateOrder(state),
+                    _ => throw new NotImplementedException(),
+                };
             }
         }
 
-        private void ChooseExtra()
+        private State ChooseExtra(State state)
         {
-            Console.WriteLine(visitor.VisitItem(order));
+            Console.WriteLine(visitor.VisitItem(state.Order));
             var extras = pizzeria.Extras.ToArray();
             Console.WriteLine("Add extra:");
             for (int i = 0; i < extras.Length; i++)
@@ -70,16 +57,18 @@ namespace CleanCodePizzeria
             }
             var input = Console.ReadLine();
             Console.Clear();
-            if (input == "done")
-            {
-                userState = UserState.ChoosingMenuItem;
-                return;
+            if (input == "done") {
+                state.UserState = UserState.ChoosingMenuItem;
             }
-            orderManager.AddExtra((Pizza)order.MenuItems.Last(), extras[int.Parse(input)]);
-            userState = UserState.ChoosingExtra;
+            else
+            {
+                orderManager.AddExtra((Pizza)state.Order.MenuItems.Last(), extras[int.Parse(input)]);
+                state.UserState = UserState.ChoosingExtra;
+            }
+            return state;
         }
 
-        private void ChoosePizza()
+        private State ChoosePizza(State state)
         {
             var pizzas = pizzeria.Pizzas.ToArray();
             Console.WriteLine("Add pizza:");
@@ -89,11 +78,13 @@ namespace CleanCodePizzeria
             }
             var input = Console.ReadLine();
             Console.Clear();
-            orderManager.AddPizza(order, pizzas[int.Parse(input)]);
-            userState = UserState.ChoosingExtra;
+            orderManager.AddPizza(state.Order, pizzas[int.Parse(input)]);
+
+            state.UserState = UserState.ChoosingExtra;
+            return state;
         }
 
-        private void ChooseDrink()
+        private State ChooseDrink(State state)
         {
             var drinks = pizzeria.Drinks.ToArray();
             Console.WriteLine("Add drink:");
@@ -103,46 +94,49 @@ namespace CleanCodePizzeria
             }
             var input = Console.ReadLine();
             Console.Clear();
-            orderManager.AddDrink(order, drinks[int.Parse(input)]);
-            userState = UserState.ChoosingMenuItem;
+            orderManager.AddDrink(state.Order, drinks[int.Parse(input)]);
+            state.UserState = UserState.ChoosingMenuItem;
+            return state;
         }
 
-        private void ChooseMenuItem()
+        private State ChooseMenuItem(State state)
         {
-            Console.WriteLine(visitor.VisitItem(order));
+            Console.WriteLine(visitor.VisitItem(state.Order));
             Console.WriteLine("What would you like to add? \n [drink | pizza | submit | cancel]");
             var input = Console.ReadLine();
             Console.Clear();
-            if (input == "pizza") userState = UserState.ChoosingPizza;
-            if (input == "drink") userState = UserState.ChoosingDrink;
-            if (input == "cancel") userState = UserState.ChoosingUser;
+            if (input == "pizza") state.UserState = UserState.ChoosingPizza;
+            if (input == "drink") state.UserState = UserState.ChoosingDrink;
+            if (input == "cancel") state.UserState = UserState.ChoosingUser;
             if (input == "submit")
             {
-                orderManager.SubmitOrder(order);
-                userState = UserState.ChoosingUser;
+                orderManager.SubmitOrder(state.Order);
+                state.UserState = UserState.ChoosingUser;
             }
+            return state;
         }
 
-        private void UpdateOrder()
+        private State UpdateOrder(State state)
         {
             Console.WriteLine("Choose action: \n[complete | remove]");
             var input = Console.ReadLine();
             Console.Clear();
             if (input == "complete")
             {
-                order.Completed = true;
-                orderManager.UpdateOrder(order);
+                state.Order.Completed = true;
+                orderManager.UpdateOrder(state.Order);
                 Console.WriteLine("Order completed");
             }
             if (input == "remove")
             {
-                orderManager.RemoveOrder(order);
+                orderManager.RemoveOrder(state.Order);
                 Console.WriteLine("Order removed");
             }
-            userState = UserState.ChoosingOrder;
+            state.UserState = UserState.ChoosingOrder;
+            return state;
         }
 
-        private void ChooseOrder()
+        private State ChooseOrder(State state)
         {
             foreach (var item in pizzeria.Orders.Where(i => !i.Value.Completed))
             {
@@ -151,22 +145,24 @@ namespace CleanCodePizzeria
             Console.WriteLine("Choose order by id: \n[id]");
             var input = Console.ReadLine();
             Console.Clear();
-            if (input == "cancel")
+            if (input == "cancel" || input == "done")
             {
-                userState = UserState.ChoosingUser;
-                return;
+                state.UserState = UserState.ChoosingUser;
+                return state;
             }
-            order = pizzeria.Orders[int.Parse(input)];
-            userState = UserState.UpdatingOrder;
+            state.Order = pizzeria.Orders[int.Parse(input)];
+            state.UserState = UserState.UpdatingOrder;
+            return state;
         }
 
-        private void ChooseUser()
+        private State ChooseUser(State state)
         {
             Console.WriteLine("Choose user type: \n[user | admin]");
             var input = Console.ReadLine();
             Console.Clear();
-            if (input == "user") userState = UserState.ChoosingMenuItem;
-            if (input == "admin") userState = UserState.ChoosingOrder;
+            if (input == "user") state.UserState = UserState.ChoosingMenuItem;
+            if (input == "admin") state.UserState = UserState.ChoosingOrder;
+            return state;
         }
     }
 }
