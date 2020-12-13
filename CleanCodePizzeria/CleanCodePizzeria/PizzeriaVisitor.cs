@@ -40,29 +40,29 @@ namespace CleanCodePizzeria
         {
             var total = order.MenuItems.Sum(i => i.Price);
             var sb = new StringBuilder();
-            sb.Append(Environment.NewLine);
-            sb.Append($"Order {order.ID}");
-            sb.Append(Environment.NewLine);
+            if (order.ID != null) 
+            {
+                sb.Append($"Order [{order.ID}]");
+                sb.Append(Environment.NewLine);
+            } 
 
             foreach (var item in order.MenuItems)
             {
                 sb.Append(VisitItem(item));
+                sb.Append(Environment.NewLine);
                 if (item is Pizza pizza)
                 {
-                    var included = pizza.Ingredients.Where(i => !(i is ExtraIngredient)).Select(i => VisitItem(i));
-                    sb.Append(Environment.NewLine);
-                    sb.Append("Ingredients: ");
-                    sb.Append(string.Join(Environment.NewLine, included));
-
                     var extras = pizza.Ingredients.Where(i => (i is ExtraIngredient)).Select(i => VisitItem(i));
                     sb.Append(Environment.NewLine);
                     sb.Append("Extras: ");
+                    sb.Append(Environment.NewLine);
                     sb.Append(string.Join(Environment.NewLine, extras));
+                    sb.Append(Environment.NewLine);
                 }
             }
 
+            sb.Append($"Total: {total}kr");
             sb.Append(Environment.NewLine);
-            sb.Append($"Total: {total}");
 
             return sb.ToString();
         }

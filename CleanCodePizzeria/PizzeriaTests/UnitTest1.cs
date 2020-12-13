@@ -39,16 +39,32 @@ namespace PizzeriaTests
         }
 
         [TestMethod]
-        public void CompleteOrderTest()
+        public void SubmitOrderTest()
         {
             var p = Pizzeria.GetPizzeria();
             var om = new OrderManager(p);
 
-            var actual = om.CompleteOrder(om.CreateOrder());
+            var actual = om.SubmitOrder(om.CreateOrder());
             var expected = om.GetOrders().First().Value;
 
             Assert.IsNotNull(actual.ID);
-            Assert.AreEqual(actual.ID, expected.ID);
+            Assert.AreSame(actual, expected);
+        }
+
+        [TestMethod]
+        public void UpdateOrderTest()
+        {
+            var p = Pizzeria.GetPizzeria();
+            var om = new OrderManager(p);
+            var order = om.CreateOrder();
+
+            order.Completed = true;
+
+            var actual = om.UpdateOrder(order);
+            var expected = om.GetOrders().First().Value;
+
+            Assert.IsNotNull(actual.ID);
+            Assert.AreSame(expected, actual);
         }
 
         [TestMethod]
@@ -72,7 +88,7 @@ namespace PizzeriaTests
 
             var extra = p.Extras.First();
             var pizza = p.Pizzas.First();
-            var order = om.AddPizza(om.CreateOrder(), om.AddExtraToPizza(pizza, extra));
+            var order = om.AddPizza(om.CreateOrder(), om.AddExtra(pizza, extra));
 
             var expected = extra.Title;
             var actual = ((Pizza)order.MenuItems.First()).Ingredients.Where(i => i is ExtraIngredient).First().Title;
