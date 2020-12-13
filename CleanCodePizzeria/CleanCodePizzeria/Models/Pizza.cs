@@ -10,11 +10,5 @@ namespace CleanCodePizzeria.Types
         {
             Ingredients = ingredients;
         }
-
-        public void AddExtra(ExtraIngredient extra)
-        {
-            Ingredients.Add(extra);
-            Price += extra.Price;
-        }
     }
 }

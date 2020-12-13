@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CleanCodePizzeria
 {
-    class PizzaRepository
+    public class PizzaRepository
     {
         private List<Pizza> Pizzas { get; }
         private List<Drink> Drinks { get; }

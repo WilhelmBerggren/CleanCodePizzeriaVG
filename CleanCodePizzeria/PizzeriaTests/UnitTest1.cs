@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CleanCodePizzeria;
+using System.Linq;
+using CleanCodePizzeria.Types;
 
 namespace PizzeriaTests
 {
@@ -7,90 +9,73 @@ namespace PizzeriaTests
     public class UnitTest1
     {
         [TestMethod]
-        public void GetAllPizzaEntriesTest()
+        public void AddDrinkTest()
         {
-            var p = new Program();
+            var p = Pizzeria.GetPizzeria();
+            var om = new OrderManager(p);
+            var d = p.Drinks.First();
 
-            var actual = p.GetPizzaMenuEntries();
-            var expected = new[] { 
-                "[1] Margerita - Ost, tomatsås - 85kr", 
-                "[2] Hawaii, Ost, tomatsås, skinka, ananas - 95kr", 
-                "[3] Kebabpizza - Ost, tomatsås, kebab, champinjoner, lök, feferoni, isbergssallad, tomat, kebabsås - 105kr",
-                "[4] Quatro Stagioni - Ost, tomatsås, skinka, räkor, musslor, champinjoner, kronärtskocka - 115kr"
-            };
+            var actual = om.AddDrink(om.CreateOrder(), d);
+            var expected = new Order();
+            expected.AddItem(d);
 
-            Assert.AreEqual(expected, actual); 
+            Assert.AreEqual(actual.MenuItems.First().Title, expected.MenuItems.First().Title);
+            Assert.AreEqual(actual.Price, expected.Price);
         }
 
         [TestMethod]
-        public void GetAllBeverageEntriesTest()
+        public void AddPizzaTest()
         {
-            var p = new Program();
+            var p = Pizzeria.GetPizzeria();
+            var om = new OrderManager(p);
+            var d = p.Pizzas.First();
 
-            var actual = p.GetBeverageMenuEntries();
-            var expected = new[] {
-                "[1] Coca Cola - 20kr",
-                "[2] Fanta - 20kr",
-                "[3] Sprite - 25kr"
-            };
+            var actual = om.AddPizza(om.CreateOrder(), d);
+            var expected = new Order();
+            expected.AddItem(d);
 
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(actual.MenuItems.First().Title, expected.MenuItems.First().Title);
+            Assert.AreEqual(actual.Price, expected.Price);
         }
 
         [TestMethod]
-        public void GetDatSweetExtraTest()
+        public void CompleteOrderTest()
         {
-            var p = new Program();
+            var p = Pizzeria.GetPizzeria();
+            var om = new OrderManager(p);
 
-            var actual = p.GetExtraMenuEntries();
-            var expected = new[] {
-                "[1] Skinka - 10kr", 
-                "[2] Ananas - 10kr", 
-                "[3] Champinjoner - 10kr", 
-                "[4] Lök - 10kr", 
-                "[5] Kebabsås - 10kr",
-                "[6] Räkor - 15kr", 
-                "[7] Musslor - 15kr", 
-                "[8] Kronärtskocka - 15kr",
-                "[9] Kebab - 20kr", 
-                "[0] Koriander - 20kr"
-            };
+            var actual = om.CompleteOrder(om.CreateOrder());
+            var expected = om.GetOrders().First().Value;
 
-            Assert.AreEqual(expected, actual);
+            Assert.IsNotNull(actual.ID);
+            Assert.AreEqual(actual.ID, expected.ID);
         }
 
         [TestMethod]
-        public void StartOrderTest()
+        public void GetAllPizzasTest()
         {
-            var p = new Program();
+            var p = Pizzeria.GetPizzeria();
+            var r = new PizzaRepository();
 
-            var expected = "Order started";
-            var actual = p.StartOrder();
+            var actual1 = p.Pizzas.Where(p => p.Title == "Margerita").FirstOrDefault();
+            var expected1 = r.GetPizzas().Where(p => p.Title == "Margerita").FirstOrDefault();
 
-            Assert.AreEqual(expected, actual);
+            Assert.IsNotNull(actual1);
+            Assert.AreEqual(actual1.Title, expected1.Title);
         }
 
         [TestMethod]
-        public void AddToOrderTest()
+        public void AddExtraIngredientTest()
         {
-            var p = new Program();
-            var expected1 = "Item Added: Margerita";
-            var expected2 = "Item Added: Kebabpizza + Ost + Kebab";
-            p.StartOrder();
-            var actual1 = p.AddToOrder("1");
-            var actual2 = p.AddToOrder("2");
+            var p = Pizzeria.GetPizzeria();
+            var om = new OrderManager(p);
 
-            Assert.AreEqual(expected1, actual1);
-            Assert.AreEqual(expected2, actual2);
-        }
+            var extra = p.Extras.First();
+            var pizza = p.Pizzas.First();
+            var order = om.AddPizza(om.CreateOrder(), om.AddExtraToPizza(pizza, extra));
 
-        [TestMethod]
-        public void FinishOrderTest()
-        {
-            var p = new Program();
-
-            var expected = "Order started";
-            var actual = p.StartOrder();
+            var expected = extra.Title;
+            var actual = ((Pizza)order.MenuItems.First()).Ingredients.Where(i => i is ExtraIngredient).First().Title;
 
             Assert.AreEqual(expected, actual);
         }

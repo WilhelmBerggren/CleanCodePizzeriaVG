@@ -17,5 +17,6 @@ namespace CleanCodePizzeria.Types
         {
             visitor.VisitItem(this);
         }
+        public int Price => MenuItems.Sum(item => item.Price);
     }
 }

@@ -6,8 +6,6 @@
         {
             var pizzeria = Pizzeria.GetPizzeria();
             var orderManager = new OrderManager(pizzeria);
-
-            orderManager.Start();
         }
     }
 }
