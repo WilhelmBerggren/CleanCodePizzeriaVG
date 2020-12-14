@@ -1,4 +1,4 @@
-﻿using CleanCodePizzeria.Types;
+﻿using CleanCodePizzeria.Models;
 using System;
 using System.Linq;
 
@@ -9,7 +9,7 @@ namespace CleanCodePizzeria
     {
         static void Main(string[] args)
         {
-            var userInterface = new UserInterface();
+            var userInterface = new UserInterface(new UserInputOutput());
             userInterface.RunInterface();
         }
     }

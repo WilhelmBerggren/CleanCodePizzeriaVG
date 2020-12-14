@@ -1,7 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CleanCodePizzeria;
 using System.Linq;
-using CleanCodePizzeria.Types;
+using CleanCodePizzeria.Models;
+using System.Collections.Generic;
 
 namespace PizzeriaTests
 {
@@ -94,6 +95,23 @@ namespace PizzeriaTests
             var actual = ((Pizza)order.MenuItems.First()).Ingredients.Where(i => i is ExtraIngredient).First().Title;
 
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void UIChooseExtraTest()
+        {
+            var mockedIO = new MockedUserInputOutput("0");
+            var ui = new UserInterface(mockedIO);
+            var p = Pizzeria.GetPizzeria();
+            var pizza = new Pizza("MyPizza", new List<Ingredient>(), 0);
+            var order = new Order();
+            order.MenuItems.Add(pizza);
+            var state = new State { UserState = UserState.ChoosingExtra, Order = order };
+
+            var actual = ui.ChooseExtra(state);
+            var expected = new State { UserState = UserState.ChoosingExtra };
+
+            Assert.AreEqual(actual.UserState, expected.UserState);
         }
     }
 }
