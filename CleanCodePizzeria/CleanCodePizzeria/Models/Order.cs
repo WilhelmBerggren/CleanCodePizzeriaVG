@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanCodePizzeria.Types
+namespace CleanCodePizzeria.Models
 {
-    public class Order
+    public class Order: IVisitable
     {
         public int? ID { get; set; }
         public bool Completed { get; set; }
@@ -17,6 +17,9 @@ namespace CleanCodePizzeria.Types
         {
             visitor.VisitItem(this);
         }
+
+        public string Accept(PizzeriaVisitor visitor) => visitor.VisitItem(this);
+
         public int Price => MenuItems.Sum(item => item.Price);
     }
 }

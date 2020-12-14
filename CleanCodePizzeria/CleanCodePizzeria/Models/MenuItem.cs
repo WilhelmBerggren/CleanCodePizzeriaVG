@@ -1,6 +1,6 @@
-﻿namespace CleanCodePizzeria.Types
+﻿namespace CleanCodePizzeria.Models
 {
-    public abstract class MenuItem
+    public abstract class MenuItem: IVisitable
     {
         public string Title { get; set; }
         public int Price { get; set; }
@@ -9,5 +9,7 @@
             Title = title;
             Price = price;
         }
+
+        public string Accept(PizzeriaVisitor visitor) => visitor.VisitItem(this);
     }
 }

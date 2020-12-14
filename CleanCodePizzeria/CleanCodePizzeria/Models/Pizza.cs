@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CleanCodePizzeria.Types
+namespace CleanCodePizzeria.Models
 {
     public class Pizza : MenuItem
     {

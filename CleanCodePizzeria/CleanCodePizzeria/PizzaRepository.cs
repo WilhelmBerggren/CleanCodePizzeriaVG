@@ -1,4 +1,4 @@
-﻿using CleanCodePizzeria.Types;
+﻿using CleanCodePizzeria.Models;
 using System.Collections.Generic;
 
 namespace CleanCodePizzeria

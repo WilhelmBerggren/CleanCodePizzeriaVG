@@ -1,6 +1,6 @@
-﻿namespace CleanCodePizzeria.Types
+﻿namespace CleanCodePizzeria.Models
 {
-    public class ExtraIngredient : Ingredient
+    public class ExtraIngredient : Ingredient, IVisitable
     {
         public ExtraIngredient(string title, int price) : base(title)
         {

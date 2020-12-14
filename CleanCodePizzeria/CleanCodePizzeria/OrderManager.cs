@@ -1,4 +1,4 @@
-﻿using CleanCodePizzeria.Types;
+﻿using CleanCodePizzeria.Models;
 using System.Linq;
 using System.Collections.Generic;
 

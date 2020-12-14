@@ -1,4 +1,4 @@
-﻿using CleanCodePizzeria.Types;
+﻿using CleanCodePizzeria.Models;
 using System;
 using System.Linq;
 
@@ -48,12 +48,12 @@ namespace CleanCodePizzeria
 
         private State ChooseExtra(State state)
         {
-            Console.WriteLine(visitor.VisitItem(state.Order));
+            Console.WriteLine(state.Order.Accept(visitor));
             var extras = pizzeria.Extras.ToArray();
             Console.WriteLine("Add extra:");
             for (int i = 0; i < extras.Length; i++)
             {
-                Console.WriteLine($"[{i}] {visitor.VisitItem(extras[i])}");
+                Console.WriteLine($"[{i}] {extras[i].Accept(visitor)}");
             }
             var input = Console.ReadLine();
             Console.Clear();
@@ -74,7 +74,7 @@ namespace CleanCodePizzeria
             Console.WriteLine("Add pizza:");
             for (int i = 0; i < pizzas.Length; i++)
             {
-                Console.WriteLine($"[{i}] {visitor.VisitItem(pizzas[i])}");
+                Console.WriteLine($"[{i}] {pizzas[i].Accept(visitor)}");
             }
             var input = Console.ReadLine();
             Console.Clear();
@@ -90,7 +90,7 @@ namespace CleanCodePizzeria
             Console.WriteLine("Add drink:");
             for (int i = 0; i < drinks.Length; i++)
             {
-                Console.WriteLine($"[{i}] {visitor.VisitItem(drinks[i])}");
+                Console.WriteLine($"[{i}] {drinks[i].Accept(visitor)}");
             }
             var input = Console.ReadLine();
             Console.Clear();
@@ -101,7 +101,7 @@ namespace CleanCodePizzeria
 
         private State ChooseMenuItem(State state)
         {
-            Console.WriteLine(visitor.VisitItem(state.Order));
+            Console.WriteLine(state.Order.Accept(visitor));
             Console.WriteLine("What would you like to add? \n [drink | pizza | submit | cancel]");
             var input = Console.ReadLine();
             Console.Clear();
@@ -140,7 +140,7 @@ namespace CleanCodePizzeria
         {
             foreach (var item in pizzeria.Orders.Where(i => !i.Value.Completed))
             {
-                Console.WriteLine(visitor.VisitItem(item.Value));
+                Console.WriteLine(item.Value.Accept(visitor));
             }
             Console.WriteLine("Choose order by id: \n[id]");
             var input = Console.ReadLine();
