@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}pizzeria-stock
+    build:
+      context: ./PizzeriaStock
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
