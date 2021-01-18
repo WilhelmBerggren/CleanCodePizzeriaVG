@@ -13,9 +13,18 @@ namespace PizzeriaStock.Models
     {
       Database.EnsureCreated();
 
-      var items = new PizzaRepository()
+      var repository = new PizzaRepository();
+      var ingredients = repository
         .GetIngredients()
         .Select(i => new StockItem { Name = i.Title, Stock = 0 });
+
+      var extras = repository
+        .GetExtras()
+        .Select(i => new StockItem { Name = i.Title, Stock = 0 });
+
+      var items = new HashSet<StockItem>();
+      items.UnionWith(ingredients);
+      items.UnionWith(extras);
 
       foreach (var item in items) {
         if (!Items.Any(i => i.Name == item.Name)) {
