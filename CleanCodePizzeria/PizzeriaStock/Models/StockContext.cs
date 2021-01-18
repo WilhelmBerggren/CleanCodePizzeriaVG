@@ -11,6 +11,7 @@ namespace PizzeriaStock.Models
   {
     public StockContext(DbContextOptions<StockContext> options) : base(options)
     {      
+      // Database.EnsureDeleted();
       Database.EnsureCreated();
 
       var repository = new PizzaRepository();

@@ -1,8 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
 namespace PizzeriaStock.Models
 {
   public class StockItem
   {
-    public int Id { get; set; }
+    [Key]
     public string Name { get; set; }
     public int Stock { get; set; }
   }

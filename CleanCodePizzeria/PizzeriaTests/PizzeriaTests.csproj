@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CleanCodePizzeria\CleanCodePizzeria.csproj" />
+    <ProjectReference Include="..\PizzeriaStock\PizzeriaStock.csproj" />
   </ItemGroup>
 
 </Project>

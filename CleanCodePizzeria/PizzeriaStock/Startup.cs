@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PizzeriaStock.Models;
+using PizzeriaStock.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace PizzeriaStock
@@ -30,6 +31,7 @@ namespace PizzeriaStock
         {
 
             services.AddControllers();
+            services.AddScoped<IStockRepository, StockRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PizzeriaStock", Version = "v1" });
