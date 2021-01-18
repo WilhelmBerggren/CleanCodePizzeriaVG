@@ -10,7 +10,7 @@ namespace PizzeriaStock.Models
   public class StockContext : DbContext
   {
     public StockContext(DbContextOptions<StockContext> options) : base(options)
-    {
+    {      
       Database.EnsureCreated();
 
       var repository = new PizzaRepository();
@@ -22,9 +22,14 @@ namespace PizzeriaStock.Models
         .GetExtras()
         .Select(i => new StockItem { Name = i.Title, Stock = 0 });
 
+      var drinks = repository
+        .GetDrinks()
+        .Select(i => new StockItem { Name = i.Title, Stock = 0 });
+
       var items = new HashSet<StockItem>();
       items.UnionWith(ingredients);
       items.UnionWith(extras);
+      items.UnionWith(drinks);
 
       foreach (var item in items) {
         if (!Items.Any(i => i.Name == item.Name)) {
