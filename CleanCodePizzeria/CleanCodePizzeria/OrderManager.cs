@@ -23,7 +23,7 @@ namespace CleanCodePizzeria
 
         public Order CreateOrder()
         {
-            return new Order();
+            return new Order() { ID = 0 };
         }
 
         public Order SubmitOrder(Order order)
