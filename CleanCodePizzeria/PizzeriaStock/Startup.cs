@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using PizzeriaStock.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace PizzeriaStock
 {
@@ -32,6 +34,7 @@ namespace PizzeriaStock
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PizzeriaStock", Version = "v1" });
             });
+            services.AddDbContext<StockContext>(options => options.UseSqlite("Data Source=stock.db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

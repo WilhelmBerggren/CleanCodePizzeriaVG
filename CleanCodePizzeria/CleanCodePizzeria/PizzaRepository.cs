@@ -8,12 +8,14 @@ namespace CleanCodePizzeria
         private List<Pizza> Pizzas { get; }
         private List<Drink> Drinks { get; }
         private List<ExtraIngredient> Extras { get; }
+        public List<Ingredient> Ingredients { get; }
 
         public List<Pizza> GetPizzas() => Pizzas;
 
         public List<Drink> GetDrinks() => Drinks;
 
         public List<ExtraIngredient> GetExtras() => Extras;
+        public List<Ingredient> GetIngredients() => Ingredients;
 
         public PizzaRepository()
         {
@@ -31,6 +33,23 @@ namespace CleanCodePizzeria
             var feferoni = new Ingredient("feferoni");
             var isbergssallad = new Ingredient("isbergssallad");
             var kebabsås = new Ingredient("kebabsås");
+
+            Ingredients = new List<Ingredient>() {
+                ost,
+                tomatsås,
+                tomat,
+                skinka,
+                ananas,
+                kebab,
+                champinjoner,
+                lök,
+                räkor,
+                musslor,
+                kronärtskocka,
+                feferoni,
+                isbergssallad,
+                kebabsås,
+            };
 
             Pizzas = new List<Pizza>()
             {
