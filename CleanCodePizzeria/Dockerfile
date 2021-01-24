@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY *.csproj .
-RUN dotnet restore
+COPY . ./
+RUN dotnet restore PizzeriaStock/*.csproj
 COPY . .
 RUN dotnet publish -c release -o /app
 
