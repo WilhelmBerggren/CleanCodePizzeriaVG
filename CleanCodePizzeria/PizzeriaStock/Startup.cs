@@ -37,6 +37,7 @@ namespace PizzeriaStock
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PizzeriaStock", Version = "v1" });
             });
             services.AddDbContext<StockContext>(options => options.UseSqlite("Data Source=stock.db"));
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +49,13 @@ namespace PizzeriaStock
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PizzeriaStock v1"));
             }
+
+            app.UseCors(builder => builder
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .SetIsOriginAllowed((host) => true)
+               .AllowCredentials()
+            );
 
             app.UseHttpsRedirection();
 

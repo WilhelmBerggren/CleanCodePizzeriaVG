@@ -8,3 +8,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5000:80"
+  web:
+    image: nginx:latest
+    volumes:
+      - ./web/static:/usr/share/nginx/html/
+    ports:
+      - "80:80"

@@ -23,7 +23,8 @@ namespace PizzeriaStock.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<StockItem> GetStockItems() {
+        public IEnumerable<StockItem> GetStockItems() 
+        {
             return _repository.GetStockItems();
         } 
 
@@ -38,7 +39,8 @@ namespace PizzeriaStock.Controllers
         }
 
         [HttpPost("UpdateStockFromOrder")]
-        public ActionResult<Order> UpdateStockItemsInOrder(Order order) {
+        public ActionResult<Order> UpdateStockItemsInOrder(Order order) 
+        {
             var ingredients = new List<string>();
             foreach(var item in order.MenuItems) {
                 if (item is Drink) {
@@ -58,7 +60,8 @@ namespace PizzeriaStock.Controllers
         }
 
         [HttpPost("MassDelivery")]
-        public ActionResult<IEnumerable<StockItem>> MassDelivery() {
+        public ActionResult<IEnumerable<StockItem>> MassDelivery() 
+        {
             foreach(var item in _repository.GetStockItems()) {
                 _repository.UpdateStockItem(new StockItem { Name = item.Name, Stock = item.Stock + 10 });
             }
